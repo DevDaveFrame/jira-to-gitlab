@@ -18,7 +18,7 @@ def get_issues(sprint_id, limit=100, page=1):
     headers = {
         'Authorization': f'Basic {encoded_token}',
         'Accepts': 'application/json',
-        }
+    }
     response = requests.get(url, headers=headers)
     return response.json()
 
