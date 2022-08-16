@@ -42,7 +42,7 @@ def save_jobs_report(
         help='The status of the jobs to save',
     ),
     output_file: str = typer.Option(
-        'gitlab_jobs_report.json',
+        'reports/gitlab_jobs_report.json',
         '--output',
         '-o',
         help='The output file to save the jobs to',
