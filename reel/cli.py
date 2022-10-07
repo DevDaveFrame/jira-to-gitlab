@@ -1,7 +1,7 @@
 import typer
 from typing import Optional, List
 from reel import __app_name__, __version__
-from reel.gitlab_api import get_last_n_jobs, save_jobs
+from reel.gitlab_api import get_last_n_jobs, save_jobs, get_last_n_job_artificats, trigger_pipeline
 from reel.jira_api import get_issues
 
 import pyperclip
@@ -61,6 +61,48 @@ def save_jobs_report(
     save_jobs(jobs, output_file)
     return
 
+@app.command()
+def save_jobs_artifacts(
+    name: str = typer.Argument(
+        'Selenium tests',
+        help='The name of the jobs to save',
+    ),
+    status: str = typer.Option(
+        None,
+        '--status',
+        '-s',
+        help='The status of the jobs to save',
+    ),
+    output_file: str = typer.Option(
+        'reports/gitlab_jobs_report.json',
+        '--output',
+        '-o',
+        help='The output file to save the jobs to',
+    ),
+    n: int = typer.Option(
+        50,
+        '--n',
+        '-n',
+        help='The number of jobs to save',
+    ),
+) -> None:
+    """
+    Save the failed jobs to a file
+    python -m reel save-jobs-artifacts -s failed -n 1
+    python -m reel save-jobs-artifacts -s success -n 1
+    """
+    jobs = get_last_n_job_artificats(status=status, name=name, n=n)
+    save_jobs(jobs, output_file)
+    return
+
+
+@app.command()
+def trigger_pipeline_command():
+    """
+    python -m reel trigger-pipeline
+    """
+    trigger_pipeline()
+    return
 
 @app.command()
 def how_many_failed(
