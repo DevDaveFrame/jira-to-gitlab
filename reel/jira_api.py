@@ -27,6 +27,6 @@ def encode_token():
     """
     base64 encode the email:token
     """
-    # base64 encode the token
-    encoded_token = base64.b64encode(f'{email}:{token}')
-    return f'Basic {encoded_token}'
+    # base64 encode the string
+    encoded_token = base64.b64encode(f'{email}:{token}'.encode('utf-8'))
+    return encoded_token.decode('utf-8')

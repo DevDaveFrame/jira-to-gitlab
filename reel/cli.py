@@ -42,7 +42,7 @@ def save_jobs_report(
         help='The status of the jobs to save',
     ),
     output_file: str = typer.Option(
-        'reports/gitlab_jobs_report.json',
+        'gitlab_jobs_report.json',
         '--output',
         '-o',
         help='The output file to save the jobs to',
@@ -121,3 +121,4 @@ def issues_in_sprint(
         issue_list.append(f'https://industrydive.atlassian.net/browse/{issue["key"]}')
     if len(issue_list) > 0:
         pyperclip.copy('\n'.join(issue_list))
+        typer.echo(f'{len(issue_list)} issues copied to clipboard')
