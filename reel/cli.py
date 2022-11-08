@@ -89,6 +89,7 @@ def save_jobs_artifacts(
     """
     Save the failed jobs to a file
     python -m reel save-jobs-artifacts -s failed -n 1
+    python -m reel save-jobs-artifacts -s success -n 1
     """
     jobs = get_last_n_job_artificats(status=status, name=name, n=n)
     save_jobs(jobs, output_file)
