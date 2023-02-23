@@ -2,7 +2,7 @@ import typer
 from typing import Optional, List
 from reel import __app_name__, __version__
 from reel.gitlab_api import get_last_n_jobs, save_jobs
-from reel.jira_api import get_issues
+from reel.jira_api import get_issues, create_review_agenda
 
 import pyperclip
 
@@ -122,3 +122,24 @@ def issues_in_sprint(
     if len(issue_list) > 0:
         pyperclip.copy('\n'.join(issue_list))
         typer.echo(f'{len(issue_list)} issues copied to clipboard')
+
+
+@app.command()
+def generate_sprint_agenda(
+    sprint_id: str = typer.Argument(
+        '0000',
+        help='The sprint id to generate the agenda for',
+    ),
+) -> None:
+    """
+    Generate the agenda for the sprint
+    """
+    typer.echo(f'Generating agenda for sprint {sprint_id}...')
+    response = create_review_agenda(sprint_id)
+    typer.echo(response)
+    if response.status_code == 201:
+        typer.echo('Agenda created successfully')
+    else:
+        typer.echo('Agenda creation failed')
+        typer.echo(response.text)
+
