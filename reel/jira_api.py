@@ -43,34 +43,51 @@ def create_review_agenda(sprint_id):
     sprint_goals = "Finish all the features scheduled for this sprint."
 
     # Define the table of contents widget
-    table_of_contents = '<ac:structured-macro ac:name="toc">\n<ac:parameter ac:name="style">disc</ac:parameter>\n</ac:structured-macro>\n'
+    table_of_contents = '{toc:printable=true|style=disc}'
 
-    kickoff_section = f'<h1>Kickoff</h1>\n<ul><li><em>Sprint goals: {sprint_goals}</em></li></ul>\n'
+    kickoff_section = f'h1. Kickoff\n- _Sprint goals:_ {sprint_goals}\n'
 
     # Define the Sprint Backlog table
-    sprint_backlog_table = '<table>\n<tr>\n<th>Sprint Backlog Item</th>\n<th>Live in Production</th>\n</tr>\n'
+    sprint_backlog_table = '||Sprint Backlog Item||Live in Production||\n'
     for issue in issues:
         issue_key = html.escape(issue["key"])
         issue_link = f'https://industrydive.atlassian.net/browse/{issue_key}'
         issue_status = html.escape(issue["fields"]["status"]["name"])
-        sprint_backlog_table += f'<tr>\n<td><a href="{issue_link}">{issue_link}</a></td>\n<td>{"YES" if issue_status == "Done" else "NO"}</td>\n</tr>\n'
-    sprint_backlog_table += '</table>\n'
+        jira_link = "{jiraissues:anonymous=true|url=" + issue_link + "}"
+        sprint_backlog_table += f'|{jira_link}|{"YES" if issue_status == "Done" else "NO"}|\n'
 
     # Define the Developer Demonstration section
-    developer_demo_section = ''
+    developer_demo_dicts = []
     for issue in issues:
+        issue_key = html.escape(issue["key"])
         issue_title = html.escape(issue["fields"]["summary"])
         assigned_to = html.escape(issue["fields"]["assignee"]["displayName"])
-        description = "*Enter a description here.*"
-        developer_demo_section += f'<h3>{issue_title}</h3>'
-        developer_demo_section += f'Presented by: @{assigned_to}\n\n'
-        developer_demo_section += f'Completed by: @{assigned_to}\n\n'
-        developer_demo_section += f'Description: {description}\n\n'
-        developer_demo_section += 'Demo: \n\n'
+        developer_demo_dicts.append({
+            'issue_key': issue_key,
+            'issue_title': issue_title,
+            'assigned_to': assigned_to,
+        })
+    developer_demo_dicts.sort(key=lambda x: x['assigned_to'])
+
+    developer_demo_section = ''
+    for issue in developer_demo_dicts:
+        description = "_Enter a description here..._"
+        developer_demo_section += f'h3. {issue["issue_title"]}\n'
+        developer_demo_section += f'Presented by: @{issue["assigned_to"]}\n'
+        developer_demo_section += f'Completed by: @{issue["assigned_to"]}\n'
+        developer_demo_section += f'Description: {description}\n'
+        developer_demo_section += 'Demo: \n'
         developer_demo_section += html.escape('Q&A: \n\n')
 
     # Define the full page HTML
-    page_html = f'{table_of_contents}{kickoff_section}{sprint_backlog_table}\n<h1>Developer Demonstration</h1>\n{developer_demo_section}'
+    page_html = f'{table_of_contents}\n'
+    page_html+= f'{kickoff_section}{sprint_backlog_table}\n'
+    page_html += f'h1. Developer Demonstration\n{developer_demo_section}'
+    page_html += f'h2. Additional Topics\n- N/A\n'
+    page_html += f'h1. Roadmap Review and Product Backlog\n'
+    page_html += f'- Presented by @Erin Erikson\n- Product Roadmap:\n- Product Backlog Top Items:\n'
+    page_html += f'h1. Q&A\n'
+    page_html += f'h1. Action Items\n'
 
     data = {
         'type': 'page',
@@ -80,8 +97,7 @@ def create_review_agenda(sprint_id):
         'body': {
             'storage':{
                 'value': page_html,
-                'representation':'storage',
-                'content-type':'text/html'
+                'representation':'wiki',
             }
         }
     }
