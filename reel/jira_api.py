@@ -82,11 +82,11 @@ def create_review_agenda(sprint_id):
     page_html = f'{table_of_contents}\n'
     page_html+= f'{kickoff_section}{sprint_backlog_table}\n'
     page_html += f'h1. Developer Demonstration\n{developer_demo_section}'
-    page_html += f'h2. Additional Topics\n- N/A\n'
+    page_html += f'h2. Additional Topics\n- N/A\n\n'
     page_html += f'h1. Roadmap Review and Product Backlog\n'
-    page_html += f'- Presented by @Erin Erikson\n- Product Roadmap:\n- Product Backlog Top Items:\n'
-    page_html += f'h1. Q&A\n'
-    page_html += f'h1. Action Items\n'
+    page_html += f'- Presented by @Erin Erikson\n- Product Roadmap:\n- Product Backlog Top Items:\n\n'
+    page_html += f'h1. Q&A\n\n'
+    page_html += f'h1. Action Items\n\n'
 
     data = {
         'type': 'page',
