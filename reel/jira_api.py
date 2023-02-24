@@ -53,8 +53,7 @@ def create_review_agenda(sprint_id):
         issue_key = html.escape(issue["key"])
         issue_link = f'https://industrydive.atlassian.net/browse/{issue_key}'
         issue_status = html.escape(issue["fields"]["status"]["name"])
-        jira_link = "{jiraissues:anonymous=true|url=" + issue_link + "}"
-        sprint_backlog_table += f'|{jira_link}|{"YES" if issue_status == "Done" else "NO"}|\n'
+        sprint_backlog_table += f'|[{issue_link}]|{"YES" if issue_status == "Done" else "NO"}|\n'
 
     # Define the Developer Demonstration section
     developer_demo_dicts = []
